@@ -5,7 +5,7 @@ from time import sleep
 
 load_dotenv()
 
-cliente = OpenAI(api_key=os.getenv("API_KEY_OPENAI"))
+cliente = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 modelo = "gpt-4"
 
 personas = {
@@ -41,23 +41,23 @@ personas = {
 
 def selecionar_persona(mensagem_usuario):
     prompt_sistema = """
-        Faça uma análise da mensagem informada abaixo para identificar se o sentimento é: positivo, 
-        neutro ou negativo. Retorne apenas um dos três tipos de sentimentos informados como resposta.
+    Faça uma análise da mensagem informada abaixo para identificar se o sentimento é: positivo, 
+    neutro ou negativo. Retorne apenas um dos três tipos de sentimentos informados como resposta.
     """
 
     resposta = cliente.chat.completions.create(
-            model=modelo,
-            messages=[
-                    {
-                            "role": "system",
-                            "content": prompt_sistema
-                    },
-                    {
-                            "role": "user",
-                            "content" : mensagem_usuario
-                    }
-            ],
-            temperature=1,
+        model=modelo,
+        messages=[
+            {
+                "role": "system",
+                "content": prompt_sistema
+            },
+            {
+                "role": "user",
+                "content" : mensagem_usuario
+            }
+        ],
+        temperature=1,
     )
 
     return resposta.choices[0].message.content.lower()

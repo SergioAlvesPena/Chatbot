@@ -6,12 +6,12 @@ from helpers import *
 
 load_dotenv()
 
-cliente = OpenAI(api_key=os.getenv("API_KEY_OPENAI"))
+cliente = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 modelo = "gpt-4"
 
-politicas_ecomart = carrega('Projeto---3573-128d8b517ec1e2613f7fa7926e277e4853d0d9b3\dados\politicas_ecomart.txt')
-dados_ecomart = carrega('Projeto---3573-128d8b517ec1e2613f7fa7926e277e4853d0d9b3\dados\dados_ecomart.txt')
-produtos_ecomart = carrega('Projeto---3573-128d8b517ec1e2613f7fa7926e277e4853d0d9b3\dados\produtos_ecomart.txt')
+politicas_ecomart = carrega('dados/políticas_ecomart.txt')
+dados_ecomart = carrega('dados/dados_ecomart.txt')
+produtos_ecomart = carrega('dados/produtos_ecomart.txt')
 
 def selecionar_documento(resposta_openai):
     if "políticas" in resposta_openai:
@@ -20,8 +20,6 @@ def selecionar_documento(resposta_openai):
         return dados_ecomart + "\n" + produtos_ecomart
     else:
         return dados_ecomart 
-
-
 
 def selecionar_contexto(mensagem_usuario):
     prompt_sistema = f"""
