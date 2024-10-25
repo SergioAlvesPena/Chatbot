@@ -12,25 +12,25 @@ load_dotenv()
 
 cliente = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 modelo = "gpt-4-1106-preview"
-contexto = carrega("dados/ecomart.txt")
+contexto = carrega("ProjetoChatbot/dados/dados_ecomart.txt")
 
 def criar_lista_ids():
     lista_ids_arquivos = []
 
     file_dados = cliente.files.create(
-        file=open("dados/dados_ecomart.txt", "rb"),
+        file=open("ProjetoChatbot/dados/dados_ecomart.txt", "rb"),
         purpose="assistants"
     )
     lista_ids_arquivos.append(file_dados.id)
 
     file_politicas = cliente.files.create(
-        file=open("dados/políticas_ecomart.txt", "rb"),
+        file=open("ProjetoChatbot/dados/políticas_ecomart.txt", "rb"),
         purpose="assistants"
     )
     lista_ids_arquivos.append(file_politicas.id)
 
     file_produtos = cliente.files.create(
-        file=open("dados/produtos_ecomart.txt","rb"),
+        file=open("ProjetoChatbot/dados/produtos_ecomart.txt","rb"),
         purpose="assistants"
     )
 
@@ -75,8 +75,7 @@ def criar_assistente(file_ids=[]):
                 Além disso, acesse os arquivos associados a você e a thread para responder as perguntas.
                 """,
         model = modelo,
-        tools= minhas_tools,
-        file_ids = file_ids
+        tools= minhas_tools
     )
     return assistente
 

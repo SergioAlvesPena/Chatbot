@@ -9,9 +9,9 @@ load_dotenv()
 cliente = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 modelo = "gpt-4"
 
-politicas_ecomart = carrega('dados/políticas_ecomart.txt')
-dados_ecomart = carrega('dados/dados_ecomart.txt')
-produtos_ecomart = carrega('dados/produtos_ecomart.txt')
+politicas_ecomart = carrega('ProjetoChatbot/dados/politicas_ecomart.txt')
+dados_ecomart = carrega('ProjetoChatbot/dados/dados_ecomart.txt')
+produtos_ecomart = carrega('ProjetoChatbot/dados/produtos_ecomart.txt')
 
 def selecionar_documento(resposta_openai):
     if "políticas" in resposta_openai:
