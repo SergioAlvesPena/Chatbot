@@ -39,7 +39,7 @@ def criar_lista_ids():
     return lista_ids_arquivos
 
 def pegar_json():
-    filename = "assistentes.json"
+    filename = "ProjetoChatbot/assistentes.json"
     
     if not os.path.exists(filename):
         thread_id = criar_thread()

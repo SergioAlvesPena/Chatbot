@@ -7,11 +7,13 @@ from helpers import *
 from selecionar_persona import *
 from selecionar_documento import *
 from assistente_ecomart import *
+from vision_ecomart import analisar_imagem
+import uuid 
 
 load_dotenv()
 
 cliente = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-modelo = "gpt-4"
+modelo = "gpt-4-1106-preview"
 
 app = Flask(__name__)
 app.secret_key = 'alura'
@@ -24,7 +26,11 @@ file_ids = assistente["file_ids"]
 STATUS_COMPLETED = "completed" 
 STATUS_REQUIRES_ACTION = "requires_action" 
 
+caminho_imagem_enviada = None
+UPLOAD_FOLDER = 'ProjetoChatbot\dados' 
+
 def bot(prompt):
+    global caminho_imagem_enviada
     maximo_tentativas = 1
     repeticao = 0
 
@@ -45,10 +51,17 @@ def bot(prompt):
                 file_ids=file_ids
             )
 
+            resposta_vision = ""
+            if caminho_imagem_enviada != None:
+                resposta_vision = analisar_imagem(caminho_imagem_enviada)
+                resposta_vision+= ". Na resposta final, apresente detelhes da descrição de imagem"
+                os.remove(caminho_imagem_enviada)
+                caminho_imagem_enviada = None
+
             cliente.beta.threads.messages.create(
                 thread_id=thread_id, 
                 role = "user",
-                content =  prompt,
+                content =  resposta_vision + prompt,
                 file_ids=file_ids
             )
 
@@ -96,7 +109,20 @@ def bot(prompt):
                 print('Erro de comunicação com OpenAI:', erro)
                 sleep(1)
             
+@app.route('/upload_imagem', methods=['POST'])
+def upload_imagem():
+    global caminho_imagem_enviada
 
+    if 'imagem' in request.files:
+        imagem_enviada = request.files['imagem']
+
+        nome_arquivo = str(uuid.uuid4()) + os.path.splitext(imagem_enviada.filename)[1]
+        caminho_arquivo = os.path.join(UPLOAD_FOLDER, nome_arquivo)
+        imagem_enviada.save(caminho_arquivo)
+        caminho_imagem_enviada = caminho_arquivo
+
+        return 'Imagem recebida com sucesso!', 200
+    return 'Nenhum arquivo foi enviado', 400
 
 @app.route("/chat", methods=["POST"])
 def chat():
